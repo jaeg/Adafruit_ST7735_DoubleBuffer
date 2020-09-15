@@ -66,7 +66,7 @@ public:
 
            // XTronical Additions
 	#ifdef SCREEN_BUFFER
-	void displayBuffer();
+	void displayBuffer(int16_t x, int16_t y, int16_t w, int16_t h);
 	#endif
            // End XTronical Additions
 

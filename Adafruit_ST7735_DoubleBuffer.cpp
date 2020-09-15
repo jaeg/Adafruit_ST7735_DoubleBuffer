@@ -366,17 +366,36 @@ void Adafruit_ST7735::setRotation(uint8_t m) {
 //XTronical additions
 #ifdef SCREEN_BUFFER
 
-void Adafruit_ST7735::displayBuffer() {
+void Adafruit_ST7735::displayBuffer(int16_t x, int16_t y, int16_t w,int16_t h) {
   int16_t byteWidth = (ST7735_TFTWIDTH + 7) / 8; // Bitmap scanline pad = whole byte
   uint8_t byte = 0;
-  int y,x;
   startWrite();
-  for (int16_t j = 0; j < ST7735_TFTHEIGHT; j++, y++) {
-    for (int16_t i = 0; i < ST7735_TFTWIDTH; i++) {
-    	drawPixel(x + i, y, ScreenBuffer[j * ST7735_TFTWIDTH + i]);
+  setAddrWindow(x, y, w, h); // Clipped area
+  for (int16_t y2 = 0; y2 < h; y2++) {
+	  uint16_t pcolors[128]; //hard coding this for now..
+	  for (int16_t x2 = 0; x2 < w; x2++) {
+	  	  pcolors[x2]=  ScreenBuffer[(y+y2) * ST7735_TFTWIDTH + (x2+x)];  		  
+	  }
+	  writePixels(pcolors, w);
+  }
+  
+
+  /*
+  startWrite();
+  for (int16_t y2 = 0; y2 < h; y2++) {
+	  for (int16_t x2 = 0; x2 < w; x2++) {
+  		drawPixel(x + x2, y + y2, ScreenBuffer[(y+y2) * ST7735_TFTWIDTH + (x2+x)]);
+	  }
+  }
+  
+  
+  /*
+  for (int16_t j = 0; j < h; j++, y++) {
+    for (int16_t i = 0; i < w; i++) {
+    	drawPixel(x + i, y, ScreenBuffer[(y+j) * ST7735_TFTWIDTH + (i+x)]);
       //writePixel(x + i, y, ScreenBuffer[j * ST7735_TFTWIDTH + i]);
     }
-  }
+  }*/
   
   endWrite();
   
